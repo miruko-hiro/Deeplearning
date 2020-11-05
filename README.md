@@ -1,2 +1,2 @@
 # Deeplearning
-Project by Deeplearning class
+Project by Deeplearning class Dimas
