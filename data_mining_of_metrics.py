@@ -31,6 +31,7 @@ def clustering(dataset):
     cost = np.zeros(20)
     for k in range(2, 20):
         kmeans = BisectingKMeans().setK(k).setSeed(1).setFeaturesCol("features")
+        print('kmeans ', kmeans)
         model = kmeans.fit(df_kmeans.sample(False, 0.1, seed=42))
         cost[k] = model.computeCost(df_kmeans)  # requires Spark 2.0 or later
     print(cost)

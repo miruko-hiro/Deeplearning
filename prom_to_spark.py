@@ -1,8 +1,6 @@
 import prometheus_api_client as pac
 import prometheus_api_client.utils as pac_u
 import pyspark as ps
-import findspark
-findspark.init("C:\Spark")
 
 def dataframe_creation():
     # точка входа в программирование Spark с помощью Dataset и DataFrame API.
@@ -68,7 +66,7 @@ def dataframe_creation():
                     dataframe = dataframe.join(df, 'time', 'right')
 
     # dataframe.show()
-    dataframe.write.format('csv').option('header', True).mode('overwrite').option('sep', ',').save('D:\study\magic\Dunaev\output.csv')
+    dataframe.write.format('csv').option('header', True).mode('overwrite').option('sep', ',').save('\\output.csv')
     return dataframe
 
 # dataframe_creation()
