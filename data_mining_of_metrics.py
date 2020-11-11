@@ -56,9 +56,24 @@ def search_opt_k(df_kmeans):
     ax.set_ylabel('cost')
     plt.show()
 
+# кластеризация по заданному кол-ву кластеров
+def clustering(df_kmeans, n):
+    kmeans = BisectingKMeans().setK(n).setSeed(1).setFeaturesCol("features")
+    print('kmeans ', kmeans)
+    model = kmeans.fit(df_kmeans)
+
+    centers = model.clusterCenters()
+
+    print("Cluster Centers: ")
+    for center in centers:
+        print(center)
+
 # загружаем метрки из csv
 df = spark.read.csv("metrics.csv")
 df.show()
-# кластеризация данных по метрикам
+# подготовка датафрейма для кластеризации
 df_for_kmeans = data_preparation(df)
+# поиск оптимального k методом локтя
 search_opt_k(df_for_kmeans)
+# после поиска k построение кластеризации и вывод центров
+clustering(df_for_kmeans, 8)
