@@ -21,16 +21,17 @@ spark = ps.sql.SparkSession.builder \
 # n - numbers of clusters
 def clustering(dataset):
     # Trains a k-means model.
+    # удалим из датафрейма все путые значение
+    dataset = dataset.drop('_c9') #удаляет полностю столбец состоящий из Nan
+    dataset = dataset.dropna() # удаляет строчки где есть Nan
+    dataset.show()
     #конвертируем данные в float
-    # FEATURES_COL = dataset.columns
-    # FEATURES_COL.pop(0)
-    FEATURES_COL = ['_c1','_c10']
+    FEATURES_COL = dataset.columns
+    FEATURES_COL.pop(0)
+    # FEATURES_COL = ['_c1','_c10']
     for col in dataset.columns:
         if col in FEATURES_COL:
             dataset = dataset.withColumn(col, dataset[col].cast('float'))
-
-    # удалим из датафрейма все путые значение
-    dataset = dataset.dropna()
 
     # в отличии от sklearn We need to store all features as an array of floats, and store this array as a column called "features"
     vecAssembler = VectorAssembler(inputCols=FEATURES_COL, outputCol="features")
