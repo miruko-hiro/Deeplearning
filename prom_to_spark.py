@@ -1,6 +1,14 @@
 import prometheus_api_client as pac
 import prometheus_api_client.utils as pac_u
 import pyspark as ps
+import findspark
+findspark.init("C:\Spark")
+
+spark = ps.sql.SparkSession.builder \
+    .master("local") \
+    .appName("Dimas Spark") \
+    .config("spark.some.config.option", "some-value") \
+    .getOrCreate()
 
 def dataframe_creation():
     # точка входа в программирование Spark с помощью Dataset и DataFrame API.
@@ -8,11 +16,6 @@ def dataframe_creation():
     # appName - устанавливает имя приложения, которое будет отображаться в веб-интерфейсе Spark
     # config - устанавливает параметр конфигурации
     # getOrCreate() - получает существующий SparkSession или, если его нет, создает новый на основе параметров, установленных в этом построителе
-    spark = ps.sql.SparkSession.builder \
-        .master("local") \
-        .appName("Dimas Spark") \
-        .config("spark.some.config.option", "some-value") \
-        .getOrCreate()
 
     # конект к прометеусу
     prom = pac.PrometheusConnect(url="http://localhost:9090/", disable_ssl=True)
@@ -66,7 +69,7 @@ def dataframe_creation():
                     dataframe = dataframe.join(df, 'time', 'right')
 
     # dataframe.show()
-    dataframe.write.format('csv').option('header', True).mode('overwrite').option('sep', ',').save('\\output.csv')
+    dataframe.write.csv('metrics.csv')
     return dataframe
 
-# dataframe_creation()
+dataframe_creation()
