@@ -18,9 +18,7 @@ spark = ps.sql.SparkSession.builder \
 #оч полезная статья по kmeans на spark
 #https://rsandstroem.github.io/sparkkmeans.html
 
-# n - numbers of clusters
-def clustering(dataset):
-    # Trains a k-means model.
+def data_preparation(dataset):
     # удалим из датафрейма все путые значение
     dataset = dataset.drop('_c9') #удаляет полностю столбец состоящий из Nan
     dataset = dataset.dropna() # удаляет строчки где есть Nan
@@ -36,6 +34,12 @@ def clustering(dataset):
     # в отличии от sklearn We need to store all features as an array of floats, and store this array as a column called "features"
     vecAssembler = VectorAssembler(inputCols=FEATURES_COL, outputCol="features")
     df_kmeans = vecAssembler.transform(dataset).select('_c0', 'features')
+
+    return df_kmeans
+
+# n - numbers of clusters
+def search_opt_k(df_kmeans):
+    # Trains a k-means model.
     # df_kmeans.show()
     #найдем оптимальное k методом локтя
     cost = np.zeros(20)
@@ -52,9 +56,9 @@ def clustering(dataset):
     ax.set_ylabel('cost')
     plt.show()
 
-
 # загружаем метрки из csv
 df = spark.read.csv("metrics.csv")
 df.show()
 # кластеризация данных по метрикам
-clustering(df)
+df_for_kmeans = data_preparation(df)
+search_opt_k(df_for_kmeans)
