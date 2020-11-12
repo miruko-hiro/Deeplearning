@@ -79,6 +79,7 @@ def data_preparation2(dataset):
                     or dataset.agg(collect_set(column)).collect()[0]['collect_set(' + column + ')'] == []:
                 dataset = dataset.drop(column)
 
+    dataset = dataset.dropna()
     dataset.show()
 
     # конвертируем данные в float
